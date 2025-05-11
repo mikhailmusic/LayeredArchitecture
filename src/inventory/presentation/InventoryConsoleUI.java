@@ -42,9 +42,8 @@ public class InventoryConsoleUI {
         System.out.println("10. Очистить нулевые запасы");
         System.out.println("11. Все продукты");
         System.out.println("12. Продукты по температурному режиму");
-        System.out.println("13. Продукты инвентаря");
-        System.out.println("14. Актуализировать продукт");
-        System.out.println("15. Информация о продукте по ID");
+        System.out.println("13. Актуализировать продукт");
+        System.out.println("14. Информация о продукте по ID");
         System.out.println("0. Выход");
         System.out.print("Выберите действие: ");
     }
@@ -64,9 +63,8 @@ public class InventoryConsoleUI {
                 case 10 -> cleanupZeroQuantity();
                 case 11 -> showAllProducts();
                 case 12 -> productsByTemperatureMode();
-                case 13 -> showInventoryProducts();
-                case 14 -> adjustInventory();
-                case 15 -> showProductById();
+                case 13 -> adjustInventory();
+                case 14 -> showProductById();
                 case 0 -> System.out.println("Выход из программы...");
                 default -> System.out.println("Неверный выбор. Попробуйте снова.");
             }
@@ -222,18 +220,6 @@ public class InventoryConsoleUI {
         }
         System.out.println("\n=== Все продукты ===");
         System.out.println(TableConsoleUI.renderTable(products));
-    }
-
-    private void showInventoryProducts() {
-        System.out.print("ID инвентаря: ");
-        String inventoryId = scanner.nextLine();
-        List<Product> products = inventoryService.getAllInventoryProducts(inventoryId);
-        if (products.isEmpty()) {
-            System.out.println("Нет продуктов в инвентаре");
-            return;
-        }
-        System.out.println("\n=== Продукты инвентаря ===");
-        products.forEach(System.out::println);
     }
 
     private void productsByTemperatureMode() {

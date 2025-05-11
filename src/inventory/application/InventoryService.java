@@ -76,10 +76,6 @@ public class InventoryService {
     public List<Product> getAllProducts() {
         return productRepository.findAllProducts();
     }
-    public List<Product> getAllInventoryProducts(String inventoryId) {
-        Inventory inventory = getInventoryOrThrow(inventoryId);
-        return inventory.getProducts();
-    }
 
     public List<Product> getProductsTemperatureMode(TemperatureMode temperatureMode) {
         return productRepository.findByTemperatureMode(temperatureMode);
