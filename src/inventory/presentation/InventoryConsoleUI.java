@@ -95,8 +95,8 @@ public class InventoryConsoleUI {
             System.out.println("Инвентари отсутствуют");
             return;
         }
+        System.out.println("\n=== Все Инвентари ===");
         for (Inventory inv : inventories) {
-            System.out.println("\n=== Все Инвентари ===");
             System.out.println("ID: " + inv.getId() + ", Название: " + inv.getName());        }
     }
 
