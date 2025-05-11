@@ -203,10 +203,8 @@ public class InventoryConsoleUI {
         Inventory inventory = inventoryService.generateInventoryReport(inventoryId);
 
         System.out.println("\n=== Отчет по инвентарю ===");
-        System.out.println("Инвентарь: " + inventory.getName());
-        for (Product p : inventory.getProducts()) {
-            System.out.println(p);
-        }
+        System.out.println("Inventory: \"" + inventory.getName() + "\" (ID: " + inventory.getId() + ")");
+        System.out.println(TableConsoleUI.renderTable(inventory.getProducts()));
     }
 
     private void cleanupZeroQuantity() {
@@ -223,7 +221,7 @@ public class InventoryConsoleUI {
             return;
         }
         System.out.println("\n=== Все продукты ===");
-        products.forEach(System.out::println);
+        System.out.println(TableConsoleUI.renderTable(products));
     }
 
     private void showInventoryProducts() {
