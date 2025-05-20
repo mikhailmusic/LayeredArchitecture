@@ -16,6 +16,9 @@ public class InventoryService {
     }
 
     public void newInventory(String id, String name) {
+        if (inventoryRepository.findById(id).isPresent()) {
+            throw new IllegalStateException("Инвентарь с ID " + id + " уже существует");
+        }
         Inventory newInventory = new Inventory(id, name);
         inventoryRepository.saveInventory(newInventory);
     }
@@ -23,6 +26,9 @@ public class InventoryService {
     public void receiveProduct(String inventoryId, String productId, String name, int quantity, LocalDate expiryDate,
                                TemperatureMode temperatureMode, int criticalLevel) {
         Inventory inventory = getInventoryOrThrow(inventoryId);
+        if (productRepository.findById(productId).isPresent()) {
+            throw new IllegalStateException("Продукт с ID " + productId + " уже существует");
+        }
         Product product = new Product(productId, name, quantity, expiryDate, temperatureMode, criticalLevel);
         inventory.addProduct(product);
         productRepository.saveProduct(product);

@@ -18,9 +18,6 @@ public class Product {
         if (quantity < 0 || criticalLevel < 0) {
             throw new IllegalArgumentException("Запас не может быть отрицательным");
         }
-        if (expiryDate == null || expiryDate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("Дата истечения срока годности не может быть пустой или в прошлом");
-        }
 
         this.id = id;
         this.name = name;

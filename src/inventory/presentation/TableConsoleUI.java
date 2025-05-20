@@ -2,6 +2,7 @@ package inventory.presentation;
 
 import inventory.domain.Product;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class TableConsoleUI {
         sb.append(line);
 
         for (Product p : products) {
-            sb.append(String.format(format, p.getId(), p.getName(), p.getQuantity(), p.getExpiryDate(),
+            sb.append(String.format(format, p.getId(), p.getName(), p.getQuantity(),
+                    p.getExpiryDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                     p.getTemperatureMode(), p.getCriticalLevel()));
         }
 

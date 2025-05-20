@@ -6,6 +6,7 @@ import inventory.domain.Product;
 import inventory.domain.TemperatureMode;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,13 +20,17 @@ public class InventoryConsoleUI {
     }
 
     public void start() {
-        int choice;
+        int choice = -1;
         do {
             showMenu();
-            choice = scanner.nextInt();
-            scanner.nextLine();
-            handleChoice(choice);
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+                handleChoice(choice);
+            } catch (Exception e) {
+                System.out.println("Непредвиденная ошибка: " + e.getMessage());
+            }
         } while (choice != 0);
+
     }
 
     private void showMenu() {
@@ -95,7 +100,8 @@ public class InventoryConsoleUI {
         }
         System.out.println("\n=== Все Инвентари ===");
         for (Inventory inv : inventories) {
-            System.out.println("ID: " + inv.getId() + ", Название: " + inv.getName());        }
+            System.out.println("ID: " + inv.getId() + ", Название: " + inv.getName());
+        }
     }
 
     private void receiveProduct() {
@@ -108,10 +114,21 @@ public class InventoryConsoleUI {
         System.out.print("Количество: ");
         int quantity = scanner.nextInt();
         scanner.nextLine();
-        System.out.print("Дата истечения (yyyy-mm-dd): ");
-        LocalDate expiry = LocalDate.parse(scanner.nextLine());
-        System.out.print("Температурный режим (FROZEN, REFRIGERATED, ROOM_TEMPERATURE): ");
-        TemperatureMode mode = TemperatureMode.valueOf(scanner.nextLine());
+        System.out.print("Дата истечения (dd-MM-yyyy): ");
+        LocalDate expiry = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        System.out.println("Температурный режим:");
+        TemperatureMode[] modes = TemperatureMode.values();
+        for (int i = 0; i < modes.length; i++) {
+            System.out.printf("%d. %s%n", i + 1, modes[i]);
+        }
+        System.out.print("Выберите вариант (введите номер): ");
+        int choice = Integer.parseInt(scanner.nextLine());
+        if (choice < 1 || choice > modes.length) {
+            throw new IllegalArgumentException("Некорректный выбор температурного режима.");
+        }
+        TemperatureMode mode = modes[choice - 1];
+
         System.out.print("Критический уровень: ");
         int criticalLevel = scanner.nextInt();
         scanner.nextLine();
@@ -135,7 +152,8 @@ public class InventoryConsoleUI {
 
         try {
             inventoryService.useProduct(inventoryId, productId, quantity);
-            System.out.println("Продукт использован");        } catch (Exception e) {
+            System.out.println("Продукт использован. Текущее количество: " + inventoryService.getProductOrThrow(productId).getQuantity());
+        } catch (Exception e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
     }
@@ -163,7 +181,7 @@ public class InventoryConsoleUI {
 
         try {
             inventoryService.restockProduct(inventoryId, productId, quantity);
-            System.out.println("Продукт пополнен");
+            System.out.println("Продукт пополнен. Текущее количество: " + inventoryService.getProductOrThrow(productId).getQuantity());
         } catch (Exception e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
@@ -192,7 +210,7 @@ public class InventoryConsoleUI {
             return;
         }
         System.out.println("\n=== Критические запасы ===");
-        critical.forEach(System.out::println);
+        System.out.println(TableConsoleUI.renderTable(critical));
     }
 
     private void generateReport() {
@@ -246,6 +264,7 @@ public class InventoryConsoleUI {
         try {
             inventoryService.adjustInventory(inventoryId, productId, actual);
             System.out.println("Количество продукта скорректировано");
+            System.out.println(inventoryService.getProductOrThrow(productId));
         } catch (Exception e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
