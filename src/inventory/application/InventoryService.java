@@ -36,11 +36,7 @@ public class InventoryService {
 
     public void writeOffExpiredProducts(String inventoryId) {
         Inventory inventory = getInventoryOrThrow(inventoryId);
-        LocalDate today = LocalDate.now();
-        List<Product> expired = inventory.getProducts().stream().filter(p -> p.isExpired(today)).collect(Collectors.toList());
-        for (Product product : expired) {
-            inventory.removeProduct(product);
-        }
+        inventory.removeExpiredProducts(LocalDate.now());
     }
 
     public void restockProduct(String inventoryId, String productId, int addQuantity) {
@@ -57,8 +53,7 @@ public class InventoryService {
 
     public List<Product> getCriticalStockProducts(String inventoryId) {
         Inventory inventory = getInventoryOrThrow(inventoryId);
-        List<Product> products = inventory.getProducts().stream().filter(Product::isBelowCriticalLevel).collect(Collectors.toList());
-        return products;
+        return inventory.criticalStockProducts();
     }
 
     public Inventory generateInventoryReport(String inventoryId) {
@@ -67,10 +62,7 @@ public class InventoryService {
 
     public void cleanupZeroQuantity(String inventoryId) {
         Inventory inventory = getInventoryOrThrow(inventoryId);
-        List<Product> products = inventory.getProducts().stream().filter(p -> p.getQuantity() == 0).collect(Collectors.toList());
-        for (Product product : products) {
-            inventory.removeProduct(product);
-        }
+        inventory.removeZeroQuantityProducts();
     }
 
     public List<Product> getAllProducts() {

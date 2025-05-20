@@ -1,8 +1,10 @@
 package inventory.domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Inventory {
     private String id;
@@ -54,6 +56,19 @@ public class Inventory {
         }
         product.increaseQuantity(quantity);
     }
+
+    public void removeExpiredProducts(LocalDate currentDate) {
+        products.removeIf(p -> p.isExpired(currentDate));
+    }
+
+    public void removeZeroQuantityProducts() {
+        products.removeIf(p -> p.getQuantity() == 0);
+    }
+
+    public List<Product> criticalStockProducts() {
+        return products.stream().filter(Product::isBelowCriticalLevel).collect(Collectors.toUnmodifiableList());
+    }
+
 
 
     @Override

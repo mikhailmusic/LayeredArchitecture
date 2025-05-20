@@ -27,7 +27,7 @@ public class InMemoryProductRepository implements IProductRepository {
 
     @Override
     public List<Product> findByTemperatureMode(TemperatureMode temperatureMode) {
-        return products.values().stream().filter(book -> book.getTemperatureMode() == temperatureMode)
+        return products.values().stream().filter(product -> product.getTemperatureMode() == temperatureMode)
                 .collect(Collectors.toList());
     }
 }
